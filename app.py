@@ -27,7 +27,8 @@ st.markdown(
             text-align: center;
             color: white;
             box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
-            margin-bottom: 2.5rem;
+            margin: 1.5rem auto 2.75rem auto;
+            max-width: 1100px;
         }
         .hero h1 {font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;}
         .hero p {font-size: 1.2rem; opacity: 0.95;}
@@ -37,7 +38,8 @@ st.markdown(
             padding: 2.5rem;
             text-align: center;
             box-shadow: 0 20px 55px rgba(3, 7, 18, 0.65);
-            margin-bottom: 2rem;
+            margin: 2.25rem auto;
+            max-width: 1100px;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .metrics-wrapper {margin: 1.5rem 0;}
@@ -92,12 +94,13 @@ st.markdown(
             background: rgba(15, 23, 42, 0.92);
             border-radius: 24px;
             padding: 1.75rem;
-            margin-top: 2rem;
+            margin: 2.75rem auto 2.25rem auto;
             display: flex;
             align-items: center;
             gap: 1.25rem;
             box-shadow: 0 25px 55px rgba(2, 6, 23, 0.55);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            max-width: 1100px;
         }
         .dev-icon {
             width: 70px;
