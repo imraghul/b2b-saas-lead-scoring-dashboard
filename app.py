@@ -16,17 +16,12 @@ st.markdown(
     """
     <style>
         [data-testid="stAppViewContainer"] {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 0 1.5rem 2rem 1.5rem;
-        }
+            background: radial-gradient(circle at top, #1f2a44 0%, #0b1120 55%, #05070f 100%);
+            padding: 0 1.5rem 2.5rem 1.5rem;
+            }
         [data-testid="stHeader"] {background: transparent;}
-        section[data-testid="stSidebar"] {
-            background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        section[data-testid="stSidebar"] * {color: white !important;}
         .hero {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.55);
             border-radius: 25px;
             padding: 3rem 2rem;
             text-align: center;
@@ -37,40 +32,50 @@ st.markdown(
         .hero h1 {font-size: 3rem; font-weight: 800; margin-bottom: 0.5rem;}
         .hero p {font-size: 1.2rem; opacity: 0.95;}
         .upload-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(15, 23, 42, 0.8);
             border-radius: 20px;
             padding: 2.5rem;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(15, 23, 42, 0.15);
+            box-shadow: 0 20px 55px rgba(3, 7, 18, 0.65);
             margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
         }
         .metrics-wrapper {margin: 1.5rem 0;}
         .metric-card {
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(15, 23, 42, 0.85);
             border-radius: 18px;
             padding: 1.75rem;
-            box-shadow: 0 12px 35px rgba(15, 23, 42, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.6);
+            box-shadow: 0 12px 45px rgba(2, 6, 23, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .metric-label {
             text-transform: uppercase;
             letter-spacing: 0.08em;
             font-size: 0.8rem;
-            color: #4a5568;
+            color: rgba(226, 232, 240, 0.8);
             margin-bottom: 0.4rem;
         }
         .metric-value {
             font-size: 2.2rem;
             font-weight: 700;
-            color: #4c51bf;
+            color: #a5b4fc;
         }
         .metric-delta {color: #48bb78; font-weight: 600;}
         .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
+            background: rgba(15, 23, 42, 0.85);
+            border-radius: 22px;
             padding: 2rem;
-            box-shadow: 0 20px 45px rgba(15, 23, 42, 0.15);
+            box-shadow: 0 25px 55px rgba(2, 6, 23, 0.55);
             margin-bottom: 1.5rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .filters-card {
+            background: rgba(15, 23, 42, 0.95);
+            border-radius: 24px;
+            padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+            box-shadow: 0 25px 55px rgba(2, 6, 23, 0.55);
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
         }
         .insight-card {
             border-radius: 18px;
@@ -84,7 +89,7 @@ st.markdown(
             background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
         }
         div[data-testid="stFileUploader"] section {text-align: center;}
-        div[data-testid="stFileUploader"] label {color: #4a5568; font-weight: 600; font-size: 1rem;}
+        div[data-testid="stFileUploader"] label {color: #e2e8f0; font-weight: 600; font-size: 1rem;}
         div[data-testid="stFileUploader"] button {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -92,6 +97,9 @@ st.markdown(
             padding: 0.6rem 1.2rem;
             border: none;
         }
+        .filters-card h3 {color: white; margin-bottom: 1.2rem;}
+        .filters-card label span {color: white !important;}
+        .filters-card [data-baseweb="slider"] div {background-color: #a5b4fc50;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -224,41 +232,42 @@ result_df["Expected_Revenue"] = (
 )
 
 # -------------------------------------------------
-# Sidebar filters
+# Filter deck (inline)
 # -------------------------------------------------
-st.sidebar.header("🎯 Filters")
-st.sidebar.caption("Fine-tune industries, regions, and thresholds to mirror the glossy mock UI.")
-
 industries = sorted(result_df["Industry"].dropna().unique())
 regions = sorted(result_df["Region"].dropna().unique())
 stages = sorted(result_df["Opportunity_Stage"].dropna().unique())
 
-selected_industries = st.sidebar.multiselect("Industry", industries, default=industries)
-selected_regions = st.sidebar.multiselect("Region", regions, default=regions)
-selected_stages = st.sidebar.multiselect("Opportunity Stage", stages, default=stages)
+with st.container():
+    st.markdown('<div class="filters-card"><h3>🎯 Filters</h3>', unsafe_allow_html=True)
+    row1_col1, row1_col2, row1_col3 = st.columns(3)
+    selected_industries = row1_col1.multiselect("Industry", industries, default=industries)
+    selected_regions = row1_col2.multiselect("Region", regions, default=regions)
+    selected_stages = row1_col3.multiselect("Opportunity Stage", stages, default=stages)
 
-size_min, size_max = int(result_df["Company_Size"].min()), int(result_df["Company_Size"].max())
-company_size_range = st.sidebar.slider(
-    "Company size range",
-    min_value=size_min,
-    max_value=size_max,
-    value=(size_min, size_max),
-)
-
-min_conv_pct = st.sidebar.slider(
-    "🎯 Min conversion probability (%)",
-    min_value=0,
-    max_value=100,
-    value=0,
-    step=5,
-)
-min_conv = min_conv_pct / 100
-min_expected_revenue = st.sidebar.number_input(
-    "💰 Min expected revenue",
-    min_value=0.0,
-    value=0.0,
-    step=5000.0,
-)
+    size_min, size_max = int(result_df["Company_Size"].min()), int(result_df["Company_Size"].max())
+    row2_col1, row2_col2, row2_col3 = st.columns(3)
+    company_size_range = row2_col1.slider(
+        "Company size range",
+        min_value=size_min,
+        max_value=size_max,
+        value=(size_min, size_max),
+    )
+    min_conv_pct = row2_col2.slider(
+        "🎯 Min conversion probability (%)",
+        min_value=0,
+        max_value=100,
+        value=0,
+        step=5,
+    )
+    min_conv = min_conv_pct / 100
+    min_expected_revenue = row2_col3.number_input(
+        "💰 Min expected revenue",
+        min_value=0.0,
+        value=0.0,
+        step=5000.0,
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
 
 filtered_df = result_df[
     (result_df["Industry"].isin(selected_industries))
@@ -306,19 +315,97 @@ for col, (label, value, delta, delta_color) in zip(metric_cols, metric_data):
     )
 
 # -------------------------------------------------
-# Tabs
+# Content sections (single page)
 # -------------------------------------------------
-tab_top_leads, tab_analytics, tab_explorer, tab_insights = st.tabs(
-    ["🏆 Top Leads", "📈 Analytics", "🔍 Lead Explorer", "🎨 Insights"]
-)
+st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+st.markdown("### 🏆 Top 15 High-Value Leads")
+if filtered_df.empty:
+    st.info("No leads match the current filter criteria.")
+else:
+    cols_to_show = [
+        "Lead_ID",
+        "Industry",
+        "Region",
+        "Company_Size",
+        "Opportunity_Stage",
+        "Pred_Convert",
+        "Pred_Churn",
+        "Pred_CLV",
+        "Expected_Revenue",
+    ]
+    styled = filtered_df.sort_values("Expected_Revenue", ascending=False).head(15)[cols_to_show]
+    styled = styled.style.format(
+        {
+            "Pred_Convert": "{:.1%}",
+            "Pred_Churn": "{:.1%}",
+            "Pred_CLV": "${:,.0f}",
+            "Expected_Revenue": "${:,.0f}",
+        }
+    )
+    st.dataframe(styled, use_container_width=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
-with tab_top_leads:
-    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("### Top 15 High-Value Leads")
-    if filtered_df.empty:
-        st.info("No leads match the current filter criteria.")
-    else:
-        cols_to_show = [
+st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+st.markdown("### 📈 Model Output Distributions & Relationships")
+if filtered_df.empty:
+    st.info("No data available for visualizations. Adjust the filters above.")
+else:
+    chart_col1, chart_col2 = st.columns(2)
+    with chart_col1:
+        chart = (
+            alt.Chart(filtered_df)
+            .mark_bar(color="#6366f1")
+            .encode(x=alt.X("Pred_Convert", bin=alt.Bin(maxbins=20)), y="count()")
+            .properties(height=250)
+        )
+        st.altair_chart(chart, use_container_width=True)
+    with chart_col2:
+        chart = (
+            alt.Chart(filtered_df)
+            .mark_bar(color="#f97316")
+            .encode(x=alt.X("Pred_Churn", bin=alt.Bin(maxbins=20)), y="count()")
+            .properties(height=250)
+        )
+        st.altair_chart(chart, use_container_width=True)
+    chart_col3, chart_col4 = st.columns(2)
+    with chart_col3:
+        chart = (
+            alt.Chart(filtered_df)
+            .mark_bar(color="#a855f7")
+            .encode(x=alt.X("Pred_CLV", bin=alt.Bin(maxbins=20)), y="count()")
+            .properties(height=250)
+        )
+        st.altair_chart(chart, use_container_width=True)
+    with chart_col4:
+        scatter = (
+            alt.Chart(filtered_df)
+            .mark_circle(size=65, opacity=0.8)
+            .encode(
+                x=alt.X("Pred_CLV", title="Predicted CLV"),
+                y=alt.Y("Expected_Revenue", title="Expected Revenue"),
+                color=alt.Color("Industry", legend=alt.Legend(title="Industry")),
+                tooltip=[
+                    "Lead_ID",
+                    "Industry",
+                    "Region",
+                    "Company_Size",
+                    "Pred_Convert",
+                    "Pred_Churn",
+                    "Pred_CLV",
+                    "Expected_Revenue",
+                ],
+            )
+            .interactive()
+        )
+        st.altair_chart(scatter, use_container_width=True)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+st.markdown("### 🔍 Lead Explorer")
+st.caption("Full dataset with model outputs. Use the filters above to focus on the accounts that matter.")
+st.dataframe(
+    filtered_df[
+        [
             "Lead_ID",
             "Industry",
             "Region",
@@ -328,154 +415,68 @@ with tab_top_leads:
             "Pred_Churn",
             "Pred_CLV",
             "Expected_Revenue",
+            "Converted",
+            "Churned",
+            "CLV",
         ]
-        styled = filtered_df.sort_values("Expected_Revenue", ascending=False).head(15)[cols_to_show]
-        styled = styled.style.format(
-            {
-                "Pred_Convert": "{:.1%}",
-                "Pred_Churn": "{:.1%}",
-                "Pred_CLV": "${:,.0f}",
-                "Expected_Revenue": "${:,.0f}",
-            }
+    ],
+    use_container_width=True,
+)
+st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
+st.markdown("### 🎨 Strategic Insights")
+if filtered_df.empty:
+    st.info("No insights to surface. Please broaden your filters.")
+else:
+    high_priority = filtered_df[
+        (filtered_df["Pred_Convert"] >= 0.7)
+        & (filtered_df["Expected_Revenue"] >= filtered_df["Expected_Revenue"].median())
+    ]
+    at_risk = filtered_df[
+        (filtered_df["Pred_Churn"] >= 0.4)
+        & (filtered_df["Pred_CLV"] >= filtered_df["Pred_CLV"].median())
+    ]
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.markdown(
+            f"""
+            <div class="insight-card positive">
+                <h3>🎯 High Priority Leads</h3>
+                <div style="font-size: 3rem; font-weight: 700;">{len(high_priority)}</div>
+                <p>High conversion probability & revenue potential</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
         )
-        st.dataframe(styled, use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with tab_analytics:
-    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("### Model Output Distributions")
-    if filtered_df.empty:
-        st.info("No data available for visualizations. Adjust the sidebar filters.")
-    else:
-        chart_col1, chart_col2 = st.columns(2)
-        with chart_col1:
-            chart = (
-                alt.Chart(filtered_df)
-                .mark_bar(color="#667eea")
-                .encode(x=alt.X("Pred_Convert", bin=alt.Bin(maxbins=20)), y="count()")
-                .properties(height=250)
-            )
-            st.altair_chart(chart, use_container_width=True)
-        with chart_col2:
-            chart = (
-                alt.Chart(filtered_df)
-                .mark_bar(color="#f56565")
-                .encode(x=alt.X("Pred_Churn", bin=alt.Bin(maxbins=20)), y="count()")
-                .properties(height=250)
-            )
-            st.altair_chart(chart, use_container_width=True)
-        chart_col3, chart_col4 = st.columns(2)
-        with chart_col3:
-            chart = (
-                alt.Chart(filtered_df)
-                .mark_bar(color="#764ba2")
-                .encode(x=alt.X("Pred_CLV", bin=alt.Bin(maxbins=20)), y="count()")
-                .properties(height=250)
-            )
-            st.altair_chart(chart, use_container_width=True)
-        with chart_col4:
-            scatter = (
-                alt.Chart(filtered_df)
-                .mark_circle(size=65, opacity=0.8)
-                .encode(
-                    x=alt.X("Pred_CLV", title="Predicted CLV"),
-                    y=alt.Y("Expected_Revenue", title="Expected Revenue"),
-                    color=alt.Color("Industry", legend=alt.Legend(title="Industry")),
-                    tooltip=[
-                        "Lead_ID",
-                        "Industry",
-                        "Region",
-                        "Company_Size",
-                        "Pred_Convert",
-                        "Pred_Churn",
-                        "Pred_CLV",
-                        "Expected_Revenue",
-                    ],
-                )
-                .interactive()
-            )
-            st.altair_chart(scatter, use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with tab_explorer:
-    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("### Lead Explorer")
-    st.caption("Full dataset with model outputs. Use sidebar filters to narrow down accounts.")
-    st.dataframe(
-        filtered_df[
-            [
-                "Lead_ID",
-                "Industry",
-                "Region",
-                "Company_Size",
-                "Opportunity_Stage",
-                "Pred_Convert",
-                "Pred_Churn",
-                "Pred_CLV",
-                "Expected_Revenue",
-                "Converted",
-                "Churned",
-                "CLV",
-            ]
-        ],
-        use_container_width=True,
+    with col_b:
+        st.markdown(
+            f"""
+            <div class="insight-card warning">
+                <h3>⚠️ At-Risk Accounts</h3>
+                <div style="font-size: 3rem; font-weight: 700;">{len(at_risk)}</div>
+                <p>High churn risk with significant CLV</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+    st.markdown("#### Expected Revenue by Industry")
+    industry_rev = (
+        filtered_df.groupby("Industry")["Expected_Revenue"].sum().reset_index().sort_values(
+            "Expected_Revenue", ascending=False
+        )
     )
-    st.markdown('</div>', unsafe_allow_html=True)
-
-with tab_insights:
-    st.markdown('<div class="glass-panel">', unsafe_allow_html=True)
-    st.markdown("### 🎨 Strategic Insights")
-    if filtered_df.empty:
-        st.info("No insights to surface. Please broaden your filters.")
-    else:
-        high_priority = filtered_df[
-            (filtered_df["Pred_Convert"] >= 0.7)
-            & (filtered_df["Expected_Revenue"] >= filtered_df["Expected_Revenue"].median())
-        ]
-        at_risk = filtered_df[
-            (filtered_df["Pred_Churn"] >= 0.4)
-            & (filtered_df["Pred_CLV"] >= filtered_df["Pred_CLV"].median())
-        ]
-        col_a, col_b = st.columns(2)
-        with col_a:
-            st.markdown(
-                f"""
-                <div class="insight-card positive">
-                    <h3>🎯 High Priority Leads</h3>
-                    <div style="font-size: 3rem; font-weight: 700;">{len(high_priority)}</div>
-                    <p>High conversion probability & revenue potential</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        with col_b:
-            st.markdown(
-                f"""
-                <div class="insight-card warning">
-                    <h3>⚠️ At-Risk Accounts</h3>
-                    <div style="font-size: 3rem; font-weight: 700;">{len(at_risk)}</div>
-                    <p>High churn risk with significant CLV</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-        st.markdown("#### Expected Revenue by Industry")
-        industry_rev = (
-            filtered_df.groupby("Industry")["Expected_Revenue"].sum().reset_index().sort_values(
-                "Expected_Revenue", ascending=False
-            )
+    bar = (
+        alt.Chart(industry_rev)
+        .mark_bar(color="#6366f1")
+        .encode(
+            x=alt.X("Expected_Revenue", title="Expected Revenue"),
+            y=alt.Y("Industry", sort="-x"),
+            tooltip=["Industry", alt.Tooltip("Expected_Revenue", format=",.0f")],
         )
-        bar = (
-            alt.Chart(industry_rev)
-            .mark_bar(color="#667eea")
-            .encode(
-                x=alt.X("Expected_Revenue", title="Expected Revenue"),
-                y=alt.Y("Industry", sort="-x"),
-                tooltip=["Industry", alt.Tooltip("Expected_Revenue", format=",.0f")],
-            )
-        )
-        st.altair_chart(bar, use_container_width=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    )
+    st.altair_chart(bar, use_container_width=True)
+st.markdown('</div>', unsafe_allow_html=True)
 
 # -------------------------------------------------
 # Download block
