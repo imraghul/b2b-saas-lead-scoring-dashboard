@@ -88,6 +88,32 @@ st.markdown(
         .insight-card.warning {
             background: linear-gradient(135deg, #f56565 0%, #e53e3e 100%);
         }
+        .dev-card {
+            background: rgba(15, 23, 42, 0.92);
+            border-radius: 24px;
+            padding: 1.75rem;
+            margin-top: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            box-shadow: 0 25px 55px rgba(2, 6, 23, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .dev-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 20px;
+            background: radial-gradient(circle at 30% 30%, #facc15, #f97316);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: #0f172a;
+            font-weight: 800;
+            box-shadow: inset 0 0 12px rgba(0,0,0,0.25);
+        }
+        .dev-card h4 {color: #f8fafc; margin: 0; font-size: 1.2rem;}
+        .dev-card p {color: rgba(226, 232, 240, 0.85); margin: 0.1rem 0 0 0;}
         div[data-testid="stFileUploader"] section {text-align: center;}
         div[data-testid="stFileUploader"] label {color: #e2e8f0; font-weight: 600; font-size: 1rem;}
         div[data-testid="stFileUploader"] button {
@@ -155,9 +181,9 @@ with st.container():
     st.markdown(
         """
         <div class="upload-card">
-            <h2 style="color:#2d3748;">👋 Welcome!</h2>
-            <p style="font-size:1.05rem;color:#4a5568;">Upload your B2B SaaS dataset to unlock AI-powered insights and lead scoring.</p>
-            <p style="color:#718096;margin-bottom:1.2rem;">The dashboard will automatically train conversion, churn, and CLV models.</p>
+            <h2 style="color:#f8fafc;">👋 Welcome!</h2>
+            <p style="font-size:1.05rem;color:#f8fafc;opacity:0.9;">Upload your B2B SaaS dataset to unlock AI-powered insights and lead scoring.</p>
+            <p style="color:#ffffff;opacity:0.85;margin-bottom:1.2rem;">The dashboard will automatically train conversion, churn, and CLV models.</p>
         </div>
         """,
         unsafe_allow_html=True,
@@ -499,6 +525,19 @@ st.markdown(
     <div style="text-align:center;color:white;margin-top:2rem;">
         <p><strong>💡 Pro Tip:</strong> Focus on leads with high conversion probability and expected revenue for maximum ROI.</p>
         <p style="opacity:0.85;">Powered by Random Forest, Logistic Regression & XGBoost</p>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+st.markdown(
+    """
+    <div class="dev-card">
+        <div class="dev-icon">RG</div>
+        <div>
+            <h4>Developed by Raghul G</h4>
+            <p>MBA 24-26 &middot; ID: M042-24</p>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
