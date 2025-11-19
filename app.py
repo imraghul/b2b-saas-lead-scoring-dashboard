@@ -132,6 +132,15 @@ st.markdown(
 )
 
 HERO_TITLE = "AI Lead Scoring Dashboard"
+DEV_CARD_HTML = """
+<div class="dev-card">
+    <div class="dev-icon">RG</div>
+    <div>
+        <h4>Developed by Raghul G</h4>
+        <p>MBA 24-26 &middot; ID: M042-24</p>
+    </div>
+</div>
+"""
 REQUIRED_COLUMNS = [
     "Lead_ID",
     "Industry",
@@ -176,6 +185,8 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+st.markdown(DEV_CARD_HTML, unsafe_allow_html=True)
 
 with st.container():
     st.markdown(
@@ -530,15 +541,4 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-st.markdown(
-    """
-    <div class="dev-card">
-        <div class="dev-icon">RG</div>
-        <div>
-            <h4>Developed by Raghul G</h4>
-            <p>MBA 24-26 &middot; ID: M042-24</p>
-        </div>
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+st.markdown(DEV_CARD_HTML, unsafe_allow_html=True)
