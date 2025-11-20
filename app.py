@@ -1,4 +1,5 @@
 import streamlit as st
+import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 from sklearn.ensemble import RandomForestClassifier
@@ -176,6 +177,59 @@ REQUIRED_COLUMNS = [
 ]
 CATEGORICAL_COLS = ["Industry", "Region", "Lead_Source", "Opportunity_Stage"]
 
+
+def make_sample_data(rows: int = 60) -> pd.DataFrame:
+    """Generate a small demo dataset that mirrors the expected schema."""
+
+    rng = np.random.default_rng(42)
+    industries = ["Technology", "Healthcare", "Finance", "Manufacturing", "Retail"]
+    regions = ["North America", "Europe", "Asia Pacific", "Latin America"]
+    sources = ["Inbound", "Outbound", "Partner", "Event", "Referral"]
+    stages = ["Prospect", "Qualification", "Proposal", "Negotiation", "Closed Won", "Closed Lost"]
+
+    def choice(options, size):
+        return rng.choice(options, size=size)
+
+    df = pd.DataFrame(
+        {
+            "Lead_ID": [f"LEAD_{1000 + i}" for i in range(rows)],
+            "Industry": choice(industries, rows),
+            "Company_Size": rng.integers(50, 5000, size=rows),
+            "Region": choice(regions, rows),
+            "Tech_Maturity": rng.integers(1, 5, size=rows),
+            "Website_Visits": rng.integers(200, 5000, size=rows),
+            "Pricing_Page_Views": rng.integers(20, 600, size=rows),
+            "Product_Page_Depth": rng.integers(1, 12, size=rows),
+            "Email_Engagement": rng.integers(10, 100, size=rows),
+            "Demo_Requests": rng.integers(0, 12, size=rows),
+            "Webinar_Attendance": rng.integers(0, 8, size=rows),
+            "CRM_Interactions": rng.integers(5, 50, size=rows),
+            "Lead_Response_Time": rng.integers(1, 48, size=rows),
+            "Feature_Breadth": rng.integers(1, 10, size=rows),
+            "Integrations_Count": rng.integers(0, 25, size=rows),
+            "DAU_MAU_Ratio": rng.uniform(0.05, 0.75, size=rows),
+            "Past_Revenue": rng.integers(20_000, 750_000, size=rows),
+            "Contract_Length": rng.integers(6, 36, size=rows),
+            "Renewal_Count": rng.integers(0, 7, size=rows),
+            "Lead_Source": choice(sources, rows),
+            "Opportunity_Stage": choice(stages, rows),
+            "Sales_Cycle_Length": rng.integers(15, 180, size=rows),
+            "Engagement_Score": rng.integers(10, 100, size=rows),
+            "Recency_Score": rng.integers(1, 10, size=rows),
+            "Intent_Score": rng.integers(1, 10, size=rows),
+            "Converted": rng.integers(0, 2, size=rows),
+            "Churned": rng.integers(0, 2, size=rows),
+            "CLV": rng.integers(30_000, 300_000, size=rows),
+        }
+    )
+
+    # Add light correlation: higher engagement + intent improve conversion; churn inversely.
+    engagement_factor = (df["Engagement_Score"] + df["Intent_Score"]) / 200
+    df["Converted"] = (rng.random(rows) < (0.25 + engagement_factor)).astype(int)
+    df["Churned"] = (rng.random(rows) < (0.15 + (1 - engagement_factor) / 2)).astype(int)
+
+    return df
+
 # -------------------------------------------------
 # Hero / intro section
 # -------------------------------------------------
@@ -208,15 +262,29 @@ with st.container():
         label_visibility="collapsed",
         help="Include all required columns such as Lead_ID, Industry, Region, Opportunity_Stage, Converted, Churned, and CLV.",
     )
+    st.caption("Or try the demo dataset if you don't have a file handy.")
+    _col_pad, sample_col = st.columns([1, 1])
+    with sample_col:
+        if st.button("Show Dashboard with Sample Data", use_container_width=True):
+            st.session_state["use_sample_data"] = True
 
-if not uploaded:
+if uploaded is not None:
+    st.session_state["use_sample_data"] = False
+
+use_sample = st.session_state.get("use_sample_data", False)
+
+if uploaded is None and not use_sample:
     st.stop()
 
 @st.cache_data(show_spinner=False)
 def load_data(file):
     return pd.read_csv(file)
 
-df = load_data(uploaded)
+if use_sample:
+    df = make_sample_data()
+    st.success("Loaded sample dataset. All charts and tables now use demo data.")
+else:
+    df = load_data(uploaded)
 
 missing = [c for c in REQUIRED_COLUMNS if c not in df.columns]
 if missing:
