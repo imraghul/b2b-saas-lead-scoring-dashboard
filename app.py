@@ -130,6 +130,18 @@ st.markdown(
         .filters-card h3 {color: white; margin-bottom: 1.2rem;}
         .filters-card label span {color: white !important;}
         .filters-card [data-baseweb="slider"] div {background-color: #a5b4fc50;}
+        .sample-button-wrap {max-width: 640px; margin: 0.6rem auto 0 auto;}
+        .sample-button-wrap button {
+            background: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #22d3ee 100%);
+            color: white;
+            padding: 0.95rem 1.5rem;
+            font-size: 1.05rem;
+            font-weight: 700;
+            border-radius: 14px;
+            border: none;
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.35);
+        }
+        .sample-button-wrap button:hover {transform: translateY(-1px); transition: all 0.2s ease;}
     </style>
     """,
     unsafe_allow_html=True,
@@ -263,10 +275,10 @@ with st.container():
         help="Include all required columns such as Lead_ID, Industry, Region, Opportunity_Stage, Converted, Churned, and CLV.",
     )
     st.caption("Or try the demo dataset if you don't have a file handy.")
-    _col_pad, sample_col = st.columns([1, 1])
-    with sample_col:
-        if st.button("Show Dashboard with Sample Data", use_container_width=True):
-            st.session_state["use_sample_data"] = True
+    st.markdown('<div class="sample-button-wrap">', unsafe_allow_html=True)
+    if st.button("Show Dashboard with Sample Data", use_container_width=True, key="sample_button"):
+        st.session_state["use_sample_data"] = True
+    st.markdown("</div>", unsafe_allow_html=True)
 
 if uploaded is not None:
     st.session_state["use_sample_data"] = False
